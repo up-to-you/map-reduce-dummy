@@ -1,6 +1,6 @@
-package ru.bmstu;
+package ru.bmstu.core;
 
-import ru.bmstu.Splitter.Range;
+import ru.bmstu.core.Splitter.Range;
 
 import java.util.Map;
 

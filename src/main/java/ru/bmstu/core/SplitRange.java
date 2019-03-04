@@ -1,4 +1,4 @@
-package ru.bmstu;
+package ru.bmstu.core;
 
 public class SplitRange {
     private long from;

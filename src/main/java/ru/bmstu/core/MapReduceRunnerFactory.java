@@ -1,6 +1,4 @@
-package ru.bmstu;
-
-import ru.bmstu.Splitter.Range;
+package ru.bmstu.core;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -48,12 +46,14 @@ public final class MapReduceRunnerFactory {
         }
 
         public O run() {
-            List<Range> splitRs = splitter.split(input);
+            splitter.split(input, splitRatio)
+                    .parallelStream()
+                    .map(range -> mapperSupp.get().map(input, range))
+                    .map(mapRs -> reducerSupp.get().reduce(mapRs))
+                    .collect(toList());
 
-//            List<Mapper<MI, K, V>> mappers = prepareWorkers(mappersSupp);
-//            List<Reducer<RI, O>> reducers = prepareWorkers(reducersSupp);
-
-//            mappers.get(0).map(splitRs);
+            List<Mapper<I, K, V>> mappers = prepareWorkers(mapperSupp);
+            List<Reducer<K, V, O>> reducers = prepareWorkers(reducerSupp);
 
             return null;
         }

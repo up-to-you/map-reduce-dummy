@@ -1,10 +1,10 @@
-package ru.bmstu;
+package ru.bmstu.core;
 
 import java.util.List;
 
 @FunctionalInterface
 public interface Splitter<I> {
-    List<Range> split(I input);
+    List<Range> split(I input, int splitRatio);
 
     static Range InputTrange(long left, long right) {
         return new Range(left, right);
