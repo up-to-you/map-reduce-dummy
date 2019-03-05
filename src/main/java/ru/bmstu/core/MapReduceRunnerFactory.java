@@ -1,8 +1,6 @@
 package ru.bmstu.core;
 
 import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -12,27 +10,27 @@ public final class MapReduceRunnerFactory {
 
     public static <I, K, V, O> MapReduceRunner<I, K, V, O> prepareRunner(
             Splitter<I> splitter,
-            Supplier<Mapper<I, K, V>> mapperSupplier,
-            Supplier<Reducer<K, V, O>> reducerSupplier) {
+            Mapper<I, K, V> mapper,
+            Reducer<K, V, O> reducer) {
 
-        return new MapReduceRunner<>(splitter, mapperSupplier, reducerSupplier);
+        return new MapReduceRunner<>(splitter, mapper, reducer);
     }
 
-    private static class MapReduceRunner<I, K, V, O> {
+    public static class MapReduceRunner<I, K, V, O> {
         private int splitRatio;
 
         private I input;
         private Splitter<I> splitter;
-        private Supplier<Mapper<I, K, V>> mapperSupp;
-        private Supplier<Reducer<K, V, O>> reducerSupp;
+        private Mapper<I, K, V> mapper;
+        private Reducer<K, V, O> reducer;
 
         private MapReduceRunner(Splitter<I> splitter,
-                                Supplier<Mapper<I, K, V>> mapperSupp,
-                                Supplier<Reducer<K, V, O>> reducerSupp) {
+                                Mapper<I, K, V> mapper,
+                                Reducer<K, V, O> reducer) {
 
             this.splitter = splitter;
-            this.mapperSupp = mapperSupp;
-            this.reducerSupp = reducerSupp;
+            this.mapper = mapper;
+            this.reducer = reducer;
         }
 
         public MapReduceRunner<I, K, V, O> input(I input) {
@@ -45,22 +43,11 @@ public final class MapReduceRunnerFactory {
             return this;
         }
 
-        public O run() {
-            splitter.split(input, splitRatio)
+        public List<O> run() {
+            return splitter.split(input, splitRatio)
                     .parallelStream()
-                    .map(range -> mapperSupp.get().map(input, range))
-                    .map(mapRs -> reducerSupp.get().reduce(mapRs))
-                    .collect(toList());
-
-            List<Mapper<I, K, V>> mappers = prepareWorkers(mapperSupp);
-            List<Reducer<K, V, O>> reducers = prepareWorkers(reducerSupp);
-
-            return null;
-        }
-
-        private <T> List<T> prepareWorkers(Supplier<T> workerSupplier) {
-            return Stream.generate(workerSupplier)
-                    .limit(splitRatio)
+                    .map(range -> mapper.map(input, range))
+                    .map(reducer::reduce)
                     .collect(toList());
         }
     }

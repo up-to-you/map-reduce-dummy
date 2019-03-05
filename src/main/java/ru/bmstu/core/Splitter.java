@@ -6,7 +6,7 @@ import java.util.List;
 public interface Splitter<I> {
     List<Range> split(I input, int splitRatio);
 
-    static Range InputTrange(long left, long right) {
+    static Range range(long left, long right) {
         return new Range(left, right);
     }
 
