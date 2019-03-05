@@ -1,5 +1,8 @@
 package ru.bmstu;
 
+import static java.lang.String.format;
+import static java.lang.System.out;
+
 public class ApplicationStarter {
 
     private static final int DEF_FILE_SIZE = 32_000;
@@ -15,9 +18,15 @@ public class ApplicationStarter {
         switch (command) {
             case "generate": FileGenerator.generate(commandArg, DEF_FILE_SIZE, DEF_LINE_LENGTH);
                 break;
-            case "count":
+            case "count": {
+                    String word = args[2];
+                    int sum = MapReduceExecutor.countWordEntries(commandArg, word);
+                    out.println(format("MapReduce found %d total number of entries of word '%s'", sum, word));
+                }
                 break;
-            case "sort":
+            case "sort": {
+
+                }
                 break;
         }
     }

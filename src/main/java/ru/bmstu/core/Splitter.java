@@ -26,5 +26,18 @@ public interface Splitter<I> {
         public long getRight() {
             return right;
         }
+
+        public void plusLeft(long left) {
+            this.left += left;
+        }
+
+        public void plusRight(long right) {
+            this.right += right;
+        }
+
+        @Override
+        public String toString() {
+            return "Range{" + left + "," + right + '}';
+        }
     }
 }
