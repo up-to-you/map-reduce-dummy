@@ -1,10 +1,9 @@
 package ru.bmstu.core;
 
-import ru.bmstu.core.Splitter.Range;
-
+import java.nio.file.Path;
 import java.util.Map;
 
 @FunctionalInterface
-public interface Mapper<I, K, V> {
-    Map<K, V> map(I input, Range range);
+public interface Mapper<K, V> {
+    Map<K, V> map(Path input);
 }

@@ -10,7 +10,7 @@ public final class MapReduceRunnerFactory {
 
     public static <I, K, V, O> MapReduceRunner<I, K, V, O> prepareRunner(
             Splitter<I> splitter,
-            Mapper<I, K, V> mapper,
+            Mapper<K, V> mapper,
             Reducer<K, V, O> reducer) {
 
         return new MapReduceRunner<>(splitter, mapper, reducer);
@@ -21,11 +21,11 @@ public final class MapReduceRunnerFactory {
 
         private I input;
         private Splitter<I> splitter;
-        private Mapper<I, K, V> mapper;
+        private Mapper<K, V> mapper;
         private Reducer<K, V, O> reducer;
 
         private MapReduceRunner(Splitter<I> splitter,
-                                Mapper<I, K, V> mapper,
+                                Mapper<K, V> mapper,
                                 Reducer<K, V, O> reducer) {
 
             this.splitter = splitter;
@@ -46,7 +46,7 @@ public final class MapReduceRunnerFactory {
         public List<O> run() {
             return splitter.split(input, splitRatio)
                     .parallelStream()
-                    .map(range -> mapper.map(input, range))
+                    .map(mapper::map)
                     .map(reducer::reduce)
                     .collect(toList());
         }

@@ -1,10 +1,12 @@
 package ru.bmstu.core;
 
+import java.nio.file.Path;
 import java.util.List;
 
 @FunctionalInterface
 public interface Splitter<I> {
-    List<Range> split(I input, int splitRatio);
+
+    List<Path> split(I input, int splitRatio);
 
     static Range range(long left, long right) {
         return new Range(left, right);
@@ -33,6 +35,10 @@ public interface Splitter<I> {
 
         public void plusRight(long right) {
             this.right += right;
+        }
+
+        public long size() {
+            return right - left;
         }
 
         @Override

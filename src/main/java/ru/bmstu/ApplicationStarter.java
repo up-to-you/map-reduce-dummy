@@ -1,7 +1,7 @@
 package ru.bmstu;
 
 import static java.lang.String.format;
-import static java.lang.System.out;
+import static java.lang.System.*;
 
 public class ApplicationStarter {
 
@@ -21,7 +21,7 @@ public class ApplicationStarter {
             case "count": {
                     String word = args[2];
                     int sum = MapReduceExecutor.countWordEntries(commandArg, word);
-                    out.println(format("MapReduce found %d total number of entries of word '%s'", sum, word));
+                    err.println(format("%sMapReduce FOUND %d TOTAL NUMBER OF ENTRIES OF WORD '%s'", lineSeparator().repeat(3), sum, word));
                 }
                 break;
             case "sort": {
