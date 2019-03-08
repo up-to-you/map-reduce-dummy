@@ -1,6 +1,8 @@
 package ru.bmstu.core;
 
+import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -17,6 +19,8 @@ public final class MapReduceRunnerFactory {
     }
 
     public static class MapReduceRunner<I, K, V, O> {
+
+        private boolean isParallel = true;
         private int splitRatio;
 
         private I input;
@@ -43,9 +47,17 @@ public final class MapReduceRunnerFactory {
             return this;
         }
 
+        public MapReduceRunner<I, K, V, O> parallel(boolean isParallel) {
+            this.isParallel = isParallel;
+            return this;
+        }
+
         public List<O> run() {
-            return splitter.split(input, splitRatio)
-                    .parallelStream()
+            List<Path> parts = splitter.split(input, splitRatio);
+
+            Stream<Path> partsStream = isParallel ? parts.parallelStream() : parts.stream();
+
+            return partsStream
                     .map(mapper::map)
                     .map(reducer::reduce)
                     .collect(toList());
