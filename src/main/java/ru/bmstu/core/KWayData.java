@@ -45,7 +45,7 @@ public class KWayData implements AutoCloseable {
         return this;
     }
 
-    public String getBufferedEntry() {
+    public String getEntry() {
         return dataBuffer.getFirst();
     }
 
@@ -82,6 +82,10 @@ public class KWayData implements AutoCloseable {
         }
 
         return dataBuffer.isEmpty();
+    }
+
+    public Path getPath() {
+        return dataPath;
     }
 
     private String readExternalLine() {

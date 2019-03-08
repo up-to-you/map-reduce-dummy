@@ -1,7 +1,11 @@
 package ru.bmstu;
 
 import static java.lang.String.format;
-import static java.lang.System.*;
+import static java.lang.System.err;
+import static java.lang.System.lineSeparator;
+import static java.time.LocalDateTime.now;
+import static java.time.temporal.ChronoUnit.SECONDS;
+import static ru.bmstu.FileGenerator.generate;
 
 public class ApplicationStarter {
 
@@ -16,17 +20,11 @@ public class ApplicationStarter {
         var commandArg = args[1];
 
         switch (command) {
-            case "generate": FileGenerator.generate(commandArg, DEF_FILE_SIZE, DEF_LINE_LENGTH);
+            case "generate": generate(commandArg, DEF_FILE_SIZE, DEF_LINE_LENGTH);
                 break;
-            case "count": {
-                    String word = args[2];
-                    int sum = MapReduceExecutor.countWordEntries(commandArg, word);
-                    err.println(format("%sMapReduce FOUND %d TOTAL NUMBER OF ENTRIES OF WORD '%s'", lineSeparator().repeat(3), sum, word));
-                }
+            case "count": countWords(commandArg, args[2]);
                 break;
-            case "sort": {
-
-                }
+            case "sort": sortFile(commandArg);
                 break;
         }
     }
@@ -34,7 +32,23 @@ public class ApplicationStarter {
     private static void ensureArgs(String... args) {
         if(args.length < 2
                 || ! args[0].matches("generate||count||sort")
-                || (args[0].equals("count") && args.length < 3))
-            throw new IllegalArgumentException("arguments are missing: [generate [filepath] || count [filepath] [word] || sort [filepath]]");
+                || (args[0].equals("count") && args.length < 3)) {
+
+            throw new IllegalArgumentException("arguments are missing: [generate [filepath] " +
+                    "|| count [filepath] [word] " +
+                    "|| sort [filepath]]");
+        }
+    }
+
+    private static void countWords(String filePath, String targetWord) {
+        int sum = MapReduceExecutor.countWordEntries(filePath, targetWord);
+        err.println(format("%sMapReduce FOUND %d TOTAL NUMBER OF ENTRIES OF WORD '%s'", lineSeparator().repeat(3), sum, targetWord));
+    }
+
+    private static void sortFile(String filePath) {
+        var start = now();
+        MapReduceExecutor.sortFile(filePath);
+        long seconds = start.until(now(), SECONDS);
+        err.println(format("Whole process took %d minutes %d seconds", seconds / 60, seconds % 60));
     }
 }

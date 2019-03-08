@@ -1,8 +1,6 @@
 package ru.bmstu.core;
 
-import java.util.Map;
-
 @FunctionalInterface
-public interface Reducer<K, V, O> {
-    O reduce(Map<K, V> input);
+public interface Reducer<D, O> {
+    O reduce(D input);
 }
