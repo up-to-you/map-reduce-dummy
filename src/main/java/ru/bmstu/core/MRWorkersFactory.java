@@ -131,20 +131,21 @@ public class MRWorkersFactory {
                             }
                         });
             }
-            err.println("Producer completed");
             flag.compareAndSet(true, false);
         });
 
         var consumer = runAsync(() -> {
             try(var sortedWriter = new BufferedWriter(new OutputStreamWriter(newOutputStream(targetPath)))) {
                 while (flag.getAcquire()) {
-                    sortedWriter.write(linesBuffer.takeLast());
-                    sortedWriter.newLine();
+                    var last = linesBuffer.pollLast();
+                    if(last != null) {
+                        sortedWriter.write(last);
+                        sortedWriter.newLine();
+                    }
                 }
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            err.println("Consumer completed");
         });
 
         allOf(producer, consumer).join();

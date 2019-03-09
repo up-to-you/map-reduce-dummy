@@ -19,5 +19,8 @@ dependencies {
 }
 
 application {
+    buildDir = project.projectDir
     mainClassName = "ru.bmstu.ApplicationStarter"
+    executableDir = "/"
+    applicationDefaultJvmArgs = listOf("-Xms8192m", "-Xmx8192m")
 }
