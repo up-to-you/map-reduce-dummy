@@ -1,3 +1,7 @@
+#### requirements
+
+Java 11 runtime or later
+
 #### base
 
 ```bash
