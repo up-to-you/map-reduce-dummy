@@ -10,5 +10,5 @@ cd script/bin
 ```bash
 ./map-reduce-dummy generate /home/$(whoami)/huge-file-dir/huge-file
 ./map-reduce-dummy count /home/$(whoami)/huge-file-dir/huge-file $(python -c "print 'polycarboxylic'*10")
-
+./map-reduce-dummy sort /home/$(whoami)/huge-file-dir/huge-file
 ```
