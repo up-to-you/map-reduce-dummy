@@ -19,8 +19,15 @@ dependencies {
 }
 
 application {
-    buildDir = project.projectDir
     mainClassName = "ru.bmstu.ApplicationStarter"
-    executableDir = "/"
     applicationDefaultJvmArgs = listOf("-Xms8192m", "-Xmx8192m")
+}
+
+tasks.installDist {
+    doLast {
+        copy {
+            from(file("$buildDir/install/${rootProject.name}"))
+            into(file("${project.projectDir}/script"))
+        }
+    }
 }
