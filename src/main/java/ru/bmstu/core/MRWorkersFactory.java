@@ -186,7 +186,7 @@ public class MRWorkersFactory {
     }
 
     private Integer currThreadNum() {
-        var matcher = Pattern.compile("\\d").matcher(currentThread().getName());
-        return matcher.find() ? valueOf(matcher.group()) : 1;
+        var matcher = Pattern.compile("\\d+").matcher(currentThread().getName());
+        return matcher.find() ? valueOf(matcher.group()) : 0;
     }
 }
