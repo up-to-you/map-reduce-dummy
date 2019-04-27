@@ -1,21 +1,23 @@
 package ru.bmstu;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.lang.ClassLoader.getSystemResource;
 import static java.lang.String.format;
 import static java.lang.Thread.sleep;
 import static java.nio.file.Files.readAllLines;
+import static java.util.Collections.emptyMap;
 import static java.util.concurrent.CompletableFuture.runAsync;
+import static java.util.stream.Collectors.toList;
 
 public interface FileGenerator {
 
@@ -81,11 +83,12 @@ public interface FileGenerator {
     }
 
     private static List<String> readThesaurus() {
-        try {
-            Path thesaurus = Paths.get(getSystemResource("words_dict").toURI());
-            return readAllLines(thesaurus);
+        try(var dictStream = FileGenerator.class.getResourceAsStream("/words_dict");
+            var dictReader = new BufferedReader(new InputStreamReader(dictStream))) {
 
-        } catch (URISyntaxException | IOException e) {
+            return dictReader.lines().collect(toList());
+
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
